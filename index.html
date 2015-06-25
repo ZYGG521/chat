@@ -1,0 +1,133 @@
+<html>
+<head>
+    <style type="text/css">
+        .huanyin{
+            color:pink;
+            position:absolute;
+            top:250px;
+            left:580px;
+        }
+        .chat{
+
+            position:absolute;
+            left:400px;        
+            width:680px;
+            height:80px;
+        }
+        .button{
+
+            position:relative;
+            left:300px;
+            top:50px;
+        }
+      .zhuangtai{
+
+           position:absolute;
+            left:600px;        
+           top:80px;
+        }
+       .head{
+         display:none;
+        position:absolute;
+            left:710px;        
+           top:540px;
+
+     }
+    .showmessage{
+   background-color: pink;
+            width: 250px;
+            height: 120px;
+            color: red;
+   }
+    .qwer{
+color:red;
+left:500px;
+}
+a#tuichu:hover{
+color:red;
+}
+.toubu{
+display:none;
+  position:absolute;
+            left:0px;        
+           top:0px;
+color:white;
+background-color:black;
+width:1518px;
+height:40px;
+
+}
+    </style>
+    <script src="jquery-1.10.2.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function zy(){
+            $(function(){
+                var name=prompt("Please enter your user name in the chat room£º\n\nBy:Zhao Yuan");
+                if(confirm("Welcome to my chat room£¬"+name)){
+                $(document).ready(function(){
+ 
+                         $(".huanyin").animate({top:'15px'},"slow");
+
+                            $(".chat").animate({top:'600px'},"slow");
+
+                              setTimeout("$('.head').css('display','block');",1000);
+  
+                                   setTimeout("$('.toubu').css('display','block');",1000);
+ 
+                                    document.getElementById("name1").innerHTML=name;
+})
+
+}
+                var iosocket = io.connect();
+                iosocket.on('connect', function () {
+                    iosocket.emit('set nickname',name);
+                    $('#incomingChatMessages').append($('<li class="one">Status: link</li>'));
+
+                    iosocket.on('message', function(message) {
+                        $('#incomingChatMessages').append($('<li class="qwer"></li>').text(message));  //mark
+                    });
+                    iosocket.on('news', function(data) {
+                        $('#incomingChatMessages').append($('<li class="three"></li>').text(data.hello));
+                    });
+                    iosocket.on('disconnect', function() {
+                        $('#incomingChatMessages').append('<h1 class="four">Disconnected</h1>');
+                    });
+                });
+
+                $('#outgoingChatMessage').keypress(function(event) {
+                    if(event.which == 13 ) {
+                        event.preventDefault();
+                        iosocket.send($('#outgoingChatMessage').val());
+                        //$('#incomingChatMessages').append($('<h1 class="five" ></h1>').text($('#outgoingChatMessage').val()));
+                        $('#outgoingChatMessage').val('');
+                    }
+                });
+
+                $(".button").click(function(event) {
+                   
+                        event.preventDefault();
+                        iosocket.send($('#outgoingChatMessage').val());
+                        //$('#incomingChatMessages').append($('<li class="five"></li>').text($('#outgoingChatMessage').val()));
+                        $('#outgoingChatMessage').val('');
+                    
+                });
+            });
+        
+        }
+
+    </script>
+</head>
+<body onload="zy()">
+<h1 class="huanyin">Welcome to my chat room.</h1>&nbsp;<h3  class="zhuangtai" id="incomingChatMessages"></h3>
+<br />
+<div class="chat">
+    <input type="text "id="outgoingChatMessage" style="height:50px; font-size:22px; color:blue;border-radius:25px;" size=65 baiduSug=1  placeholder="The chat information input here, the default by the Enter key to send!">
+    <img src="send.gif" class="button" style="cursor:pointer">
+</div>
+<h3 class="head">Chat log</h3>
+<div class="toubu">
+<h5>Information real time interaction based on websocket B/S node.js+socket.io architecture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="name1" title="Here is the user name" style="cursor:pointer"></span>&nbsp;|&nbsp;<span><a href=" " id="tuichu" style="color:white">Sign out</a></span></h5>
+</div>
+</body>
+</html>
